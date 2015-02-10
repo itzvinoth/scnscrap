@@ -1,0 +1,52 @@
+<!doctype html>
+<title">Hello from Flask</title>
+<body style="background-color:orange;">
+
+<h1>Hello World!</h1>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script>
+function loadAjax() {
+	console.log("Loading")
+	function checkData(test) {
+			alert(JSON.stringify(test))
+			$('#container').highcharts({
+		        title: {
+		            text: 'Blog',
+		            x: -20 //center
+		        },
+		        subtitle: {
+		            text: 'Number of likes per blog ',
+		            x: -20
+		        },
+
+		        series: [{
+		            name: 'Likes',
+		            data: test
+		        }]
+		    });
+		};
+	(function(){
+		$.ajax({
+			url: "/arr/",
+			type: "GET",
+			dataType: "JSON",
+			success: function (data, status, jqXHR) {
+				checkData(data);
+				// execute if success response
+			},
+			error: function (jqXHR, status, err) {
+				console.log(error);
+				// execute if error response
+			},
+			complete: function (jqXHR, status) {
+				// execute after success or error response
+			}
+		})
+	})();
+}
+</script>
+
+<button type='button' onclick='loadAjax()'>Load Ajax</button>
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+</body>
