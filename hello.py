@@ -1,63 +1,48 @@
 import json
-import urllib2
-from BeautifulSoup import BeautifulSoup
+
+import requests
 from flask import Flask
 from flask import render_template, Response
+from BeautifulSoup import BeautifulSoup
+
 app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
 	return 'Hello World!'
-	
+
 @app.route('/arr/')
 def array():
-	#data = {"key1": "value1", "key2": "value2", "key3": "value3"}
-	#data = [2,1,3,5]
-	#return Response(json.dumps(data),  mimetype='application/json')
 
 	likesArr = []
-	i = 0
-	# #Scraping code goes here.... 
-	page = urllib2.urlopen("http://scn.sap.com/people/mike.howles4/content")
-	soup = BeautifulSoup(''.join(page))
+	pagination = 0
+	base_url = "http://scn.sap.com/people/mike.howles4/content"
 
-	if soup.findAll('a',{'class':'j-pagination-next'}):
-		while i<2:
-			
-			link = "http://scn.sap.com/people/mike.howles4/content?start=" + str((i+1)*20)
-			# Goes into this condition when the second time runs...
-			if link.find("http") != -1 & i == 1:
-				linkTest = "http://scn.sap.com/people/mike.howles4/content?start=20"
-				link.replace(linkTest,'')
-			page = urllib2.urlopen(link)
-			soup = BeautifulSoup(''.join(page))
-			fLikes = soup.findAll('a', {'class':'j-meta-number', 'data-command':'showLikes'})
-			mLikes = unicode.join(u'\n',map(unicode,fLikes))
+	while True:
+		# Request page with params `start`
+		# ex. http://scn.sap.com/people/mike.howles4/content?start=20
+		page = requests.get(base_url, params={"start":str(pagination)})
+		soup = BeautifulSoup(page.text)
 
-			soup = BeautifulSoup(''.join(mLikes))
+		# Get author name
+		author = soup.title.string.split("'s")[0].strip()
 
-			for i in range(len(soup.findAll('a'))):
-				likesArr.append(int(''.join(soup.findAll('a')[i].contents)))
+		if page.text.find(author+" has not created any content yet") == -1:
+			pagination += 20
+		else:
+			break
 
-			
-			return Response(json.dumps(likesArr),  mimetype='application/json')
+		# finding no. of likes and converting format
+		fLikes = soup.findAll('a', {'class':'j-meta-number', 'data-command':'showLikes'})
+		mLikes = unicode.join(u'\n', map(unicode,fLikes))
 
-			i += 1	
+		soup = BeautifulSoup(''.join(mLikes))
 
-	#soup = BeautifulSoup(''.join(page))
+		for i in range(len(soup.findAll('a'))):
+			likesArr.append(int(''.join(soup.findAll('a')[i].contents)))
 
-	# #finding no. of likes and converting format
-	fLikes = soup.findAll('a', {'class':'j-meta-number', 'data-command':'showLikes'})
-	mLikes = unicode.join(u'\n',map(unicode,fLikes))
-
-	soup = BeautifulSoup(''.join(mLikes))
-
-	for i in range(len(soup.findAll('a'))):
-		likesArr.append(int(''.join(soup.findAll('a')[i].contents)))
-
-	
 	return Response(json.dumps(likesArr),  mimetype='application/json')
-	
+
 @app.route('/hello/')
 @app.route('/hello/<name>')
 def hello(name=None):
@@ -65,4 +50,3 @@ def hello(name=None):
 
 if __name__ == '__main__':
 	app.run()
-
