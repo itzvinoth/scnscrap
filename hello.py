@@ -25,10 +25,10 @@ def array():
 		while i<2:
 			
 			link = "http://scn.sap.com/people/mike.howles4/content?start=" + str((i+1)*20)
+			# Goes into this condition when the second time runs...
 			if link.find("http") != -1 & i == 1:
 				linkTest = "http://scn.sap.com/people/mike.howles4/content?start=20"
 				link.replace(linkTest,'')
-			#link.replace("http://scn.sap.com/people/mike.howles4/content?start=" + str((i)*20),'')
 			page = urllib2.urlopen(link)
 			soup = BeautifulSoup(''.join(page))
 			fLikes = soup.findAll('a', {'class':'j-meta-number', 'data-command':'showLikes'})
@@ -66,10 +66,3 @@ def hello(name=None):
 if __name__ == '__main__':
 	app.run()
 
-	#	span title="likes"	<a class="j-meta-number"
-
-	#soup.find("b", { "class" : "lime" })
-	#test = soup.findAll('a',{'class':'j-meta-number','data-command':'showLikes'})
-	#test1 = unicode.join(u'\n',map(unicode,test))
-	#soup = BeautifulSoup(''.join(test1))
-	#print soup.prettify()
