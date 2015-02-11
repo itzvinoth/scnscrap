@@ -9,8 +9,11 @@
 function loadAjax() {
 	console.log("Loading")
 	function checkData(test) {
-			alert(JSON.stringify(test))
+			//alert(JSON.stringify(test))
 			$('#container').highcharts({
+				chart: {
+					type: 'column'
+				},
 		        title: {
 		            text: 'Blog',
 		            x: -20 //center

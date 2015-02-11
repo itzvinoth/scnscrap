@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return 'Hello World!'
+	return 'Hello World!'
 	
 @app.route('/arr/')
 def array():
@@ -16,10 +16,35 @@ def array():
 	#return Response(json.dumps(data),  mimetype='application/json')
 
 	likesArr = []
-
+	i = 0
 	# #Scraping code goes here.... 
-	page = urllib2.urlopen("http://scn.sap.com/people/nithyanandamvenu/content")
+	page = urllib2.urlopen("http://scn.sap.com/people/mike.howles4/content")
 	soup = BeautifulSoup(''.join(page))
+
+	if soup.findAll('a',{'class':'j-pagination-next'}):
+		while i<2:
+			
+			link = "http://scn.sap.com/people/mike.howles4/content?start=" + str((i+1)*20)
+			if link.find("http") != -1 & i == 1:
+				linkTest = "http://scn.sap.com/people/mike.howles4/content?start=20"
+				link.replace(linkTest,'')
+			#link.replace("http://scn.sap.com/people/mike.howles4/content?start=" + str((i)*20),'')
+			page = urllib2.urlopen(link)
+			soup = BeautifulSoup(''.join(page))
+			fLikes = soup.findAll('a', {'class':'j-meta-number', 'data-command':'showLikes'})
+			mLikes = unicode.join(u'\n',map(unicode,fLikes))
+
+			soup = BeautifulSoup(''.join(mLikes))
+
+			for i in range(len(soup.findAll('a'))):
+				likesArr.append(int(''.join(soup.findAll('a')[i].contents)))
+
+			
+			return Response(json.dumps(likesArr),  mimetype='application/json')
+
+			i += 1	
+
+	#soup = BeautifulSoup(''.join(page))
 
 	# #finding no. of likes and converting format
 	fLikes = soup.findAll('a', {'class':'j-meta-number', 'data-command':'showLikes'})
