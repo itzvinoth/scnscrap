@@ -31,9 +31,8 @@ def array():
 			pagination += 20
 		else:
 			break
-
 		# finding no. of likes and converting format
-		fLikes = soup.findAll('a', {'class':'j-meta-number', 'data-command':'showLikes'})
+		fLikes = soup.findAll('a', {'class':'j-meta-number', 'data-command':'showLikes', 'data-object-type':'38'})
 		mLikes = unicode.join(u'\n', map(unicode,fLikes))
 
 		soup = BeautifulSoup(''.join(mLikes))
