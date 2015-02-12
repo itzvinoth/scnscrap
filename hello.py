@@ -1,4 +1,5 @@
 import json
+import re
 
 import requests
 from flask import Flask
@@ -14,11 +15,9 @@ def hello_world():
 @app.route('/arr/')
 def array():
 
-	likesArr = []
+	data = []
 	pagination = 0
 	base_url = "http://scn.sap.com/people/mike.howles4/content"
-
-	checkbTitle = []
 
 	while True:
 		# Request page with params `start`
@@ -33,34 +32,35 @@ def array():
 			pagination += 20
 		else:
 			break
-		# finding no. of likes and converting format
-		fLikes = soup.findAll('a', {'class':'j-meta-number', 'data-command':'showLikes', 'data-object-type':'38'})
-		mLikes = unicode.join(u'\n', map(unicode,fLikes))
 
-		soup = BeautifulSoup(''.join(mLikes))
+		# return soup
 
-		soupTitle = BeautifulSoup(page.text)
-		# finding title scraping goes here
-		bTitle = soupTitle.findAll('tr',{'data-object-type':'38'})
-		# mTitle = unicode.join(u'\n', map(unicode,bTitle))
+		rows = soup.find(
+			'table', attrs={'class':'j-browse-list'}).find('tbody').findAll('tr')
 
-		# soupTitle = BeautifulSoup(''.join(mTitle))
+		for row in rows:
+			icon_class = row.find('td', attrs={'class':'j-td-icon'}).find(
+				'img', attrs={'class':re.compile(r".*\bjive-icon-blog\b.*")})
 
+			if icon_class is not None:
+				row_title = row.find('td', attrs={'class':'j-td-title'}).find('a')
+				row_title_text = row_title.text.encode('ascii','ignore')
+				row_title_link = row_title['href'].encode('ascii','ignore')
+				row_likes = int(row.find(attrs={'data-command':'showLikes'})['data-count'])
+				row_bookmarks = int(row.find(attrs={'data-command':'showBookmarks'})['data-count'])
+				row_views = int(row.find('td', attrs={
+					'class':re.compile(r".*\bj-td-views\b.*")
+					}).find('span').contents[0])
 
-		for i in range(len(soup.findAll('a'))):
-			likesArr.append(int(''.join(soup.findAll('a')[i].contents)))
+				data.append({
+					'title': row_title_text,
+					'link': row_title_link,
+					'likes': row_likes,
+					'bookmarks': row_bookmarks,
+					'views': row_views
+					})
 
-		for i in range(len(bTitle)):
-			checkbTitle += soupTitle.findAll('tr',{'data-object-type':'38'})[i].findAll('a')[0].contents
-
-		for i in range(len(bTitle)):
-			likesArr.append(checkbTitle[i].encode('ascii','ignore'))
-			
-		# checkmTitle = unicode.join(u'\n', map(unicode,checkbTitle))
-		# soupTitle = BeautifulSoup(''.join(checkmTitle))
-		# likesArr.append(str(''.join(soupTitle.contents)))	
-
-	return Response(json.dumps(likesArr),  mimetype='application/json')
+	return Response(json.dumps(data),  mimetype='application/json')
 
 @app.route('/hello/')
 @app.route('/hello/<name>')
@@ -69,12 +69,3 @@ def hello(name=None):
 
 if __name__ == '__main__':
 	app.run()
-
-
-for i in range(16):
-	checkbTitle += soup.findAll('tr',{'data-object-type':'38'})[i].findAll('a')[0].contents
-
-uconvert = unicode.join(u'\n', map(unicode,checkbTitle))
-uconvert.encode('ascii','ignore')
-arrconvert = uconvert.split('\n')
-likesArr.append(arrconvert)
