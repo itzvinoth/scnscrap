@@ -18,6 +18,8 @@ def array():
 	pagination = 0
 	base_url = "http://scn.sap.com/people/mike.howles4/content"
 
+	checkbTitle = []
+
 	while True:
 		# Request page with params `start`
 		# ex. http://scn.sap.com/people/mike.howles4/content?start=20
@@ -37,8 +39,26 @@ def array():
 
 		soup = BeautifulSoup(''.join(mLikes))
 
+		soupTitle = BeautifulSoup(page.text)
+		# finding title scraping goes here
+		bTitle = soupTitle.findAll('tr',{'data-object-type':'38'})
+		# mTitle = unicode.join(u'\n', map(unicode,bTitle))
+
+		# soupTitle = BeautifulSoup(''.join(mTitle))
+
+
 		for i in range(len(soup.findAll('a'))):
 			likesArr.append(int(''.join(soup.findAll('a')[i].contents)))
+
+		for i in range(len(bTitle)):
+			checkbTitle += soupTitle.findAll('tr',{'data-object-type':'38'})[i].findAll('a')[0].contents
+
+		for i in range(len(bTitle)):
+			likesArr.append(checkbTitle[i].encode('ascii','ignore'))
+			
+		# checkmTitle = unicode.join(u'\n', map(unicode,checkbTitle))
+		# soupTitle = BeautifulSoup(''.join(checkmTitle))
+		# likesArr.append(str(''.join(soupTitle.contents)))	
 
 	return Response(json.dumps(likesArr),  mimetype='application/json')
 
@@ -49,3 +69,12 @@ def hello(name=None):
 
 if __name__ == '__main__':
 	app.run()
+
+
+for i in range(16):
+	checkbTitle += soup.findAll('tr',{'data-object-type':'38'})[i].findAll('a')[0].contents
+
+uconvert = unicode.join(u'\n', map(unicode,checkbTitle))
+uconvert.encode('ascii','ignore')
+arrconvert = uconvert.split('\n')
+likesArr.append(arrconvert)
