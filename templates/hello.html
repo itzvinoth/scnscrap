@@ -8,8 +8,15 @@
 <script>
 function loadAjax() {
 	console.log("Loading")
+	var likesLen = [], titleLen = [];
 	function checkData(test) {
-			//alert(JSON.stringify(test))
+			
+			for (var i=0;i<test.length;i++) {
+				likesLen.push(Number(JSON.stringify(test[i]["likes"])))
+				titleLen.push(JSON.stringify(test[i]["title"]))
+			}
+			console.log(JSON.stringify(likesLen))
+			console.log(JSON.stringify(titleLen))
 			$('#container').highcharts({
 				chart: {
 					type: 'column'
@@ -25,8 +32,14 @@ function loadAjax() {
 
 		        series: [{
 		            name: 'Likes',
-		            data: test
-		        }]
+		            data: likesLen
+		        }],
+		        xAxis: {
+		            labels: {
+		                enabled: false
+		            },
+		            categories: titleLen
+        		},
 		    });
 		};
 	(function(){
