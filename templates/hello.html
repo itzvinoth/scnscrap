@@ -14,9 +14,14 @@ function loadAjax() {
 			for (var i=0;i<test.length;i++) {
 				likesLen.push(Number(JSON.stringify(test[i]["likes"])))
 				titleLen.push(JSON.stringify(test[i]["title"]))
+				test[i].y = test[i].likes
+				test[i].url = "http://scn.sap.com" + test[i].link
+				delete test[i].likes
+				delete test[i].link
 			}
 			console.log(JSON.stringify(likesLen))
 			console.log(JSON.stringify(titleLen))
+			console.log(JSON.stringify(test))
 			$('#container').highcharts({
 				chart: {
 					type: 'column'
@@ -29,10 +34,21 @@ function loadAjax() {
 		            text: 'Number of likes per blog ',
 		            x: -20
 		        },
-
+				plotOptions: {
+		            series: {
+		                cursor: 'pointer',
+		                point: {
+		                    events: {
+		                        click: function () {
+		                            location.href = this.options.url;
+		                        }
+		                    }
+		                }
+		            }
+		        },
 		        series: [{
 		            name: 'Likes',
-		            data: likesLen
+		            data: test
 		        }],
 		        xAxis: {
 		            labels: {
@@ -40,6 +56,7 @@ function loadAjax() {
 		            },
 		            categories: titleLen
         		},
+        			
 		    });
 		};
 	(function(){
