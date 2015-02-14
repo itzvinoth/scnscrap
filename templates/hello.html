@@ -40,7 +40,8 @@ function loadAjax() {
 		                point: {
 		                    events: {
 		                        click: function () {
-		                            location.href = this.options.url;
+		                            //location.href = this.options.url;
+		                            window.open(this.options.url,'_blank')
 		                        }
 		                    }
 		                }
