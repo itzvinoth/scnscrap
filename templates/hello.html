@@ -1,86 +1,19 @@
 <!doctype html>
-<title">Hello from Flask</title>
-<body style="background-color:orange;">
+<head>
+	<title>Hello from Flask</title>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.min.js"></script>
+	<script src="//code.highcharts.com/highcharts.js"></script>
 
-<h1>Hello World!</h1>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script src="http://code.highcharts.com/highcharts.js"></script>
-<script>
-function loadAjax() {
-	console.log("Loading")
-	var likesLen = [], titleLen = [];
-	function checkData(test) {
-			
-			for (var i=0;i<test.length;i++) {
-				likesLen.push(Number(JSON.stringify(test[i]["likes"])))
-				titleLen.push(JSON.stringify(test[i]["title"]))
-				test[i].y = test[i].likes
-				test[i].url = "http://scn.sap.com" + test[i].link
-				delete test[i].likes
-				delete test[i].link
-			}
-			console.log(JSON.stringify(likesLen))
-			console.log(JSON.stringify(titleLen))
-			console.log(JSON.stringify(test))
-			$('#container').highcharts({
-				chart: {
-					type: 'column'
-				},
-		        title: {
-		            text: 'Blog',
-		            x: -20 //center
-		        },
-		        subtitle: {
-		            text: 'Number of likes per blog ',
-		            x: -20
-		        },
-				plotOptions: {
-		            series: {
-		                cursor: 'pointer',
-		                point: {
-		                    events: {
-		                        click: function () {
-		                            //location.href = this.options.url;
-		                            window.open(this.options.url,'_blank')
-		                        }
-		                    }
-		                }
-		            }
-		        },
-		        series: [{
-		            name: 'Likes',
-		            data: test
-		        }],
-		        xAxis: {
-		            labels: {
-		                enabled: false
-		            },
-		            categories: titleLen
-        		},
-        			
-		    });
-		};
-	(function(){
-		$.ajax({
-			url: "/arr/",
-			type: "GET",
-			dataType: "JSON",
-			success: function (data, status, jqXHR) {
-				checkData(data);
-				// execute if success response
-			},
-			error: function (jqXHR, status, err) {
-				console.log(error);
-				// execute if error response
-			},
-			complete: function (jqXHR, status) {
-				// execute after success or error response
-			}
-		})
-	})();
-}
-</script>
+	<link rel="stylesheet" href="http://css-spinners.com/css/spinner/plus.css" type="text/css">
 
-<button type='button' onclick='loadAjax()'>Load Ajax</button>
-<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css">
+	<script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+</head>
+<body>
+	<h1>SCN user stats</h1>
+	<button id="loadData" type="button" onclick="loadGraph()">Load Ajax</button>
+	<button id="sortLikes" type="button" onclick="sortByLikes()">Sort by likes(Asc)</button>
+	<button id="sortLikes" type="button" onclick="sortByLikes(true)">Sort by likes(Desc)</button>
+	<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 </body>
