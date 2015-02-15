@@ -5,13 +5,15 @@
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.66.0-2013.10.09/jquery.blockUI.min.js"></script>
 	<script src="//code.highcharts.com/highcharts.js"></script>
 
-	<link rel="stylesheet" href="http://css-spinners.com/css/spinner/three-quarters.css" type="text/css">
+	<link rel="stylesheet" href="http://css-spinners.com/css/spinner/plus.css" type="text/css">
 
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css">
 	<script src="{{ url_for('static', filename='js/custom.js') }}"></script>
 </head>
 <body>
 	<h1>SCN user stats</h1>
-	<button id="loadData" type="button" onclick="loadAjax()">Load Ajax</button>
+	<button id="loadData" type="button" onclick="loadGraph()">Load Ajax</button>
+	<button id="sortLikes" type="button" onclick="sortByLikes()">Sort by likes(Asc)</button>
+	<button id="sortLikes" type="button" onclick="sortByLikes(true)">Sort by likes(Desc)</button>
 	<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 </body>
