@@ -89,6 +89,7 @@ function plotGraph(data, desc) {
 		},
 		plotOptions: {
 			series: {
+				colorByPoint: true,
 				cursor: 'pointer',
 				point: {
 					events: {
